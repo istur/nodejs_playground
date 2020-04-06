@@ -1,29 +1,23 @@
 const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
 
-const rr = require()
 
 const server = express();
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
 
-server.use('/two', (req, res, next) => {
-    console.log("First middleware;");
-    next();
-});
+server.set('view engine', 'pug');
+server.set('views', 'views');
+
+server.use(bodyParser.urlencoded({extended: false}));
+server.use(express.static(path.join(__dirname, 'public')));
+
+server.use('/admin', adminRoutes.routes);
+server.use(shopRoutes);
 
 server.use((req, res, next) => {
-    console.log("Second middleware;");
-    res.send('<h1>Secondo middleware</h1>');
-});
-
-server.use('/users', (req, res, next) => {
-    console.log("User Path");
-    res.send('<h1>Mario rossi</h1></br><h1>Giovanni Verdi</h1></br>');
-});
-
-server.use('/', (req, res, next) => {
-    console.log("Benvenuto;");
-    res.send('<h1>Benvenuto</h1>');
-});
-
-
+    res.status(404).render('404', {pageTitle: '404 Page Not Found'});
+})
 
 server.listen(3000);
